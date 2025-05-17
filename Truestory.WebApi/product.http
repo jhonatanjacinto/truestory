@@ -1,0 +1,56 @@
+@baseUrl = http://localhost:5011
+
+### GET /products - Get all products
+GET {{baseUrl}}/products
+
+### GET /products/page/{page}/{pageSize=10} - Get products by page (default page size is 10)
+GET {{baseUrl}}/products/page/1
+
+### GET /products/page/{page}/{pageSize} - Get products by page with custom page size
+GET {{baseUrl}}/products/page/3/5
+
+### GET /products/{id} - Get a product by ID
+GET {{baseUrl}}/products/ff808181932badb60196e087615833df
+
+### POST /products - Create a new product
+POST {{baseUrl}}/products
+Content-Type: application/json
+
+{
+    "name": "Motorola Edge 40",
+    "data": {
+        "Hard Disk": "256GB",
+        "RAM": "8GB",
+        "Screen Size": "6.55 inches",
+        "Battery": "4400mAh"
+    }
+}
+
+### PUT /products/{id} - Update a product by ID
+PUT {{baseUrl}}/products/ff808181932badb60196e087615833df
+Content-Type: application/json
+
+{
+    "name": "Motorola Edge 40 Ultra",
+    "data": {
+        "Hard Disk": "516GB",
+        "RAM": "16GB",
+        "Screen Size": "6.85 inches",
+        "Battery": "5000mAh",
+        "Camera": "200MP"
+    }
+}
+
+### PATCH /products/{id} - Partially update a product by ID
+PATCH {{baseUrl}}/products/ff808181932badb60196e087615833df
+Content-Type: application/json
+
+{
+    "name": "Motorola Edge 40 Pro",
+    "data": {
+        "Cover Color": "Pink"
+    }
+}
+
+### DELETE /products/{id} - Delete a product by ID
+DELETE {{baseUrl}}/products/ff808181932badb60196e087615833df

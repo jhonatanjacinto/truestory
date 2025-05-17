@@ -1,7 +1,25 @@
 ﻿@page "/"
+@inject ProductApiService ProductApiService
 
 <PageTitle>Home</PageTitle>
 
 <h1>Hello, world!</h1>
 
 Welcome to your new app.
+
+<ul>
+    @foreach (var product in products)
+    {
+        <li>@product.Name</li>
+    }
+</ul>
+
+
+@code {
+    private List<ProductDTO> products = [];
+
+    protected override async Task OnInitializedAsync()
+    {
+        products = await ProductApiService.GetAllProductsAsync();
+    }
+}
