@@ -1,4 +1,3 @@
-using System;
 using Microsoft.EntityFrameworkCore;
 using Truestory.WebApi.Database;
 using Truestory.WebApi.Entities;

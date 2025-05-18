@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="../Truestory.Core/Truestory.Core.csproj" />
+    <ProjectReference Include="../Truestory.Common/Truestory.Common.csproj" />
   </ItemGroup>
 
 </Project>

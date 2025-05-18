@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace Truestory.Core.Contracts;
+namespace Truestory.Common.Contracts;
 
 public record class ProductDTO
 {

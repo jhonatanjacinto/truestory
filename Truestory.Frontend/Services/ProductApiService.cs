@@ -1,5 +1,5 @@
 using System;
-using Truestory.Core.Contracts;
+using Truestory.Common.Contracts;
 
 namespace Truestory.Frontend.Services;
 

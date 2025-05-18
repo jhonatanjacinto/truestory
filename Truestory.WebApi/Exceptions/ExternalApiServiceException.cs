@@ -1,5 +1,4 @@
-using System;
-using Truestory.Core.Exceptions;
+using Truestory.Common.Exceptions;
 
 namespace Truestory.WebApi.Exceptions;
 

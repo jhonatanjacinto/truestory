@@ -4,9 +4,9 @@ using Truestory.WebApi.ApiValidations;
 using Truestory.WebApi.ApiResponses;
 using Truestory.WebApi.Database;
 using Truestory.WebApi.Services;
-using Truestory.Core.Exceptions;
-using Truestory.Core.Contracts;
-using Truestory.Core.Validators;
+using Truestory.Common.Exceptions;
+using Truestory.Common.Contracts;
+using Truestory.Common.Validators;
 using Truestory.WebApi.Adapters;
 
 namespace Truestory.WebApi.Endpoints;

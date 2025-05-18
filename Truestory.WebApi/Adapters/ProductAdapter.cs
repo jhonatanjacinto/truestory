@@ -1,5 +1,4 @@
-using System;
-using Truestory.Core.Contracts;
+using Truestory.Common.Contracts;
 using Truestory.WebApi.Entities;
 
 namespace Truestory.WebApi.Adapters;

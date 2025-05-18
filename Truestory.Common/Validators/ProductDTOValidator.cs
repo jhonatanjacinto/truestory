@@ -1,7 +1,7 @@
 using FluentValidation;
-using Truestory.Core.Contracts;
+using Truestory.Common.Contracts;
 
-namespace Truestory.Core.Validators;
+namespace Truestory.Common.Validators;
 
 public class ProductDTOValidator : AbstractValidator<ProductDTO>
 {

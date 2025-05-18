@@ -1,5 +1,5 @@
 using System;
 
-namespace Truestory.Core.Exceptions;
+namespace Truestory.Common.Exceptions;
 
 public class TruestoryApiException(string message) : Exception(message);
