@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Truestory.WebApi.Adapters;
 using Truestory.WebApi.Database;
 using Truestory.WebApi.Entities;
 
@@ -38,14 +39,7 @@ public class ProductDbSeederService(
                 }
 
                 // Map DTOs to entities
-                var products = productDtos.Select(p => new Product
-                {
-                    Id = p.Id,
-                    Name = p.Name,
-                    Data = p.Data,
-                    CreatedAt = p.CreatedAt,
-                    UpdatedAt = p.UpdatedAt
-                }).ToList();
+                var products = productDtos.Select(ProductAdapter.ToEntity).ToList();
 
                 // Add products to the database
                 await dbContext.Products.AddRangeAsync(products, cancellationToken);

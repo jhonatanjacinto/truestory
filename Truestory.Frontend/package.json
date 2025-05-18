@@ -1,0 +1,15 @@
+{
+  "name": "truestory.frontend",
+  "version": "1.0.0",
+  "description": "Packages for the front-end of Truestory API challenge application",
+  "scripts": {
+    "build": "npx @tailwindcss/cli -i ./Assets/css/tailwindcss-input.css -o ./wwwroot/app.css --minify",
+    "watch": "npx @tailwindcss/cli -i ./Assets/css/tailwindcss-input.css -o ./wwwroot/app.css --minify --watch"
+  },
+  "author": "Jhonatan Jacinto",
+  "license": "ISC",
+  "dependencies": {
+    "@tailwindcss/cli": "^4.1.7",
+    "tailwindcss": "^4.1.7"
+  }
+}

@@ -1,0 +1,7 @@
+@import "tailwindcss";
+
+@layer base {
+    *, ::after, ::before {
+        outline: none;
+    }
+}
