@@ -1,5 +1,7 @@
 using System;
+using Truestory.Common.ApiResponses;
 using Truestory.Common.Contracts;
+using Truestory.Common.Exceptions;
 
 namespace Truestory.Frontend.Services;
 
@@ -18,7 +20,18 @@ public class ProductApiService(IHttpClientFactory httpClientFactory, ILogger<Pro
                 return products is not null ? [.. products] : [];
             }
 
-            throw new Exception($"Failed to fetch products from Truestory API: {response.ReasonPhrase}");
+            var errorResponse = await response.Content.ReadFromJsonAsync<ErrorResponse>();
+            if (errorResponse is not null)
+            {
+                throw new TruestoryApiException(errorResponse.Message);
+            }
+
+            throw new TruestoryApiException($"Failed to fetch products from Truestory API: {response.ReasonPhrase}");
+        }
+        catch (TruestoryApiException ex)
+        {
+            logger.LogError(ex, "Truestory API exception occurred.");
+            throw;
         }
         catch (Exception ex)
         {
@@ -27,7 +40,7 @@ public class ProductApiService(IHttpClientFactory httpClientFactory, ILogger<Pro
         }
     }
 
-    public async Task<List<ProductDTO>> GetPaginatedProductsAsync(int page, int pageSize = 10)
+    public async Task<PaginatedResponse<ProductDTO>?> GetPaginatedProductsAsync(int page, int pageSize = 10)
     {
         try
         {
@@ -36,11 +49,22 @@ public class ProductApiService(IHttpClientFactory httpClientFactory, ILogger<Pro
 
             if (response.IsSuccessStatusCode)
             {
-                var products = await response.Content.ReadFromJsonAsync<IEnumerable<ProductDTO>>();
-                return products is not null ? [.. products] : [];
+                var paginatedResponse = await response.Content.ReadFromJsonAsync<PaginatedResponse<ProductDTO>>();
+                return paginatedResponse;
             }
 
-            throw new Exception($"Failed to fetch paginated products from Truestory API: {response.ReasonPhrase}");
+            var errorResponse = await response.Content.ReadFromJsonAsync<ErrorResponse>();
+            if (errorResponse is not null)
+            {
+                throw new TruestoryApiException(errorResponse.Message);
+            }
+
+            throw new TruestoryApiException($"Failed to fetch paginated products from Truestory API: {response.ReasonPhrase}");
+        }
+        catch (TruestoryApiException ex)
+        {
+            logger.LogError(ex, "Truestory API exception occurred.");
+            throw;
         }
         catch (Exception ex)
         {

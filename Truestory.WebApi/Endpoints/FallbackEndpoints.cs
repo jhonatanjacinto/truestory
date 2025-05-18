@@ -1,5 +1,5 @@
 using System.Net;
-using Truestory.WebApi.ApiResponses;
+using Truestory.Common.ApiResponses;
 
 namespace Truestory.WebApi.Endpoints;
 

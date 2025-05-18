@@ -1,7 +1,7 @@
 using System.Net;
 using Microsoft.EntityFrameworkCore;
 using Truestory.WebApi.ApiValidations;
-using Truestory.WebApi.ApiResponses;
+using Truestory.Common.ApiResponses;
 using Truestory.WebApi.Database;
 using Truestory.WebApi.Services;
 using Truestory.Common.Exceptions;

@@ -1,4 +1,4 @@
-using System;
+using Truestory.Common.ApiResponses;
 
 namespace Truestory.WebApi.ApiResponses;
 

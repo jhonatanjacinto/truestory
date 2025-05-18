@@ -1,4 +1,4 @@
-namespace Truestory.WebApi.ApiResponses;
+namespace Truestory.Common.ApiResponses;
 
 public record PaginatedResponse<T>(
     IEnumerable<T> Items,
