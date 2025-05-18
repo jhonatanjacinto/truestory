@@ -5,6 +5,7 @@ using Truestory.WebApi.Middlewares;
 using Truestory.WebApi.Services;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddOpenApi();
 builder.Services.AddDbContext<TruestoryDbContext>(options => options.UseInMemoryDatabase("TruestoryInMemoryDb"));
 builder.Services.AddScoped<ProductExternalApiService>();
 builder.Services.AddHttpClient("ExternalApiClient", client =>
@@ -16,6 +17,15 @@ builder.Services.AddHttpClient("ExternalApiClient", client =>
 builder.Services.AddHostedService<ProductDbSeederService>();
 
 var app = builder.Build();
+
+if (app.Environment.IsDevelopment())
+{
+    app.MapOpenApi();
+    app.UseSwaggerUI(options =>
+    {
+        options.SwaggerEndpoint("/openapi/v1.json", "Truestory API v1");
+    });
+}
 
 app.UseHttpsRedirection();
 app.UseMiddleware<InvalidJsonHandler>();

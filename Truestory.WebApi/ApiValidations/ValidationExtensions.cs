@@ -55,12 +55,10 @@ public static class ValidationExtensions
                     );
                     return;
                 }
-                finally
+
+                if (originalRequestDelegate != null)
                 {
-                    if (originalRequestDelegate != null)
-                    {
-                        await originalRequestDelegate(context);
-                    }
+                    await originalRequestDelegate(context);
                 }
             };
         });

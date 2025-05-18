@@ -2,14 +2,14 @@ using System.Text.Json.Serialization;
 
 namespace Truestory.Common.Contracts;
 
-public record class ProductDTO
+public record class ProductDTO : IProductDTO
 {
     [JsonPropertyName("id")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     public string Id { get; init; } = string.Empty;
 
     [JsonPropertyName("name")]
-    public string Name { get; init; } = string.Empty;
+    public string? Name { get; init; } = string.Empty;
 
     [JsonPropertyName("data")]
     public Dictionary<string, dynamic>? Data { get; init; }

@@ -65,7 +65,7 @@ public class ProductExternalApiService(
     }
 
     // Create a new product in the external API
-    public async Task<ProductDTO> CreateProductAsync(ProductDTO productDto)
+    public async Task<ProductDTO> CreateProductAsync(CreateProductDTO productDto)
     {
         try
         {
@@ -99,7 +99,7 @@ public class ProductExternalApiService(
     }
 
     // Update an existing product in the external API
-    public async Task<ProductDTO> UpdateProductAsync(string id, ProductDTO productDto)
+    public async Task<ProductDTO> UpdateProductAsync(string id, UpdateProductDTO productDto)
     {
         try
         {
@@ -132,7 +132,7 @@ public class ProductExternalApiService(
         }
     }
     
-    public async Task<ProductDTO> PartialUpdateProductAsync(string id, ProductDTO productDto)
+    public async Task<ProductDTO> PartialUpdateProductAsync(string id, PatchProductDTO productDto)
     {
         try
         {

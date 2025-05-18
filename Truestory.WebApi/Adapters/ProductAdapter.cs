@@ -29,14 +29,14 @@ public static class ProductAdapter
         };
     }
 
-    public static Product UpdateEntity(Product product, ProductDTO productDto)
+    public static void ApplyToEntity(Product product, ProductDTO productDto)
     {
         product.Name = string.IsNullOrEmpty(productDto.Name) ? product.Name : productDto.Name;
 
-        if (productDto.Data is not null)
+        if (productDto.Data is not null && productDto.Data.Count > 0)
         {
             product.Data ??= [];
-            
+
             foreach (var key in productDto.Data.Keys)
             {
                 if (product.Data.ContainsKey(key))
@@ -52,6 +52,5 @@ public static class ProductAdapter
 
         product.UpdatedAt = productDto.UpdatedAt ?? product.UpdatedAt;
         product.CreatedAt = productDto.CreatedAt ?? product.CreatedAt;
-        return product;
     }
 }

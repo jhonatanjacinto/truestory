@@ -8,6 +8,7 @@ using Truestory.Common.Exceptions;
 using Truestory.Common.Contracts;
 using Truestory.Common.Validators;
 using Truestory.WebApi.Adapters;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Truestory.WebApi.Endpoints;
 
@@ -18,16 +19,27 @@ public static class ProductApiEndpoints
         var group = app.MapGroup("/products");
 
         // GET /products - Get all products
-        group.MapGet("/", async (TruestoryDbContext context) =>
+        group.MapGet("/", async ([FromQuery(Name = "filter")] string? term, TruestoryDbContext context) =>
         {
             try
             {
+                if (!string.IsNullOrEmpty(term))
+                {
+                    var productsFiltered = await context.Products
+                        .Where(p => p.Name.Contains(term))
+                        .Select(p => ProductAdapter.ToDto(p))
+                        .AsNoTracking()
+                        .ToListAsync();
+
+                    return Results.Ok(productsFiltered ?? []);
+                }
+
                 var products = await context.Products
                     .Select(p => ProductAdapter.ToDto(p))
                     .AsNoTracking()
                     .ToListAsync();
 
-                return Results.Ok(products);
+                return Results.Ok(products ?? []);
             }
             catch (Exception ex)
             {
@@ -42,7 +54,7 @@ public static class ProductApiEndpoints
         .WithName("GetAllProducts");
 
         // GET /products/page/{page}/{pageSize} - Get products by page
-        group.MapGet("/page/{page:int}/{pageSize:int=10}", async (int page, int pageSize, TruestoryDbContext context) =>
+        group.MapGet("/page/{page:int}/{pageSize:int=10}", async (int page, int pageSize, [FromQuery(Name = "filter")] string? term, TruestoryDbContext context) =>
         {
             if (page < 1 || pageSize < 1)
             {
@@ -56,6 +68,41 @@ public static class ProductApiEndpoints
 
             try
             {
+                if (!string.IsNullOrEmpty(term))
+                {
+                    var totalFilteredProducts = await context.Products
+                        .Where(p => p.Name.Contains(term))
+                        .CountAsync();
+                    var totalFilteredPages = (int)Math.Ceiling((double)totalFilteredProducts / pageSize);
+                    if (page > totalFilteredPages)
+                    {
+                        return Results.NotFound(
+                            new ErrorResponse(
+                                (int)HttpStatusCode.NotFound,
+                                "No products found for the specified page."
+                            )
+                        );
+                    }
+
+                    var productsFiltered = await context.Products
+                        .Where(p => p.Name.Contains(term))
+                        .Skip((page - 1) * pageSize)
+                        .Take(pageSize)
+                        .Select(p => ProductAdapter.ToDto(p))
+                        .AsNoTracking()
+                        .ToListAsync();
+
+                    return Results.Ok(
+                        new PaginatedResponse<ProductDTO>(
+                            productsFiltered ?? [],
+                            totalFilteredProducts,
+                            totalFilteredPages,
+                            page,
+                            pageSize
+                        )
+                    );
+                }
+
                 var totalProducts = await context.Products.CountAsync();
                 var totalPages = (int)Math.Ceiling((double)totalProducts / pageSize);
                 if (page > totalPages)
@@ -77,7 +124,7 @@ public static class ProductApiEndpoints
 
                 return Results.Ok(
                     new PaginatedResponse<ProductDTO>(
-                        products,
+                        products ?? [],
                         totalProducts,
                         totalPages,
                         page,
@@ -113,11 +160,11 @@ public static class ProductApiEndpoints
         .WithName("GetProductById");
 
         // POST /products - Create a new product
-        group.MapPost("/", async (ProductDTO productDto, ProductExternalApiService productExternalApiService, TruestoryDbContext context) =>
+        group.MapPost("/", async (CreateProductDTO createProductDto, ProductExternalApiService productExternalApiService, TruestoryDbContext context) =>
         {
             try
             {
-                productDto = await productExternalApiService.CreateProductAsync(productDto);
+                var productDto = await productExternalApiService.CreateProductAsync(createProductDto);
                 var product = ProductAdapter.ToEntity(productDto);
                 product.UpdatedAt = product.CreatedAt;
                 context.Products.Add(product);
@@ -144,10 +191,10 @@ public static class ProductApiEndpoints
             }
         })
         .WithName("CreateProduct")
-        .WithValidation(new ProductDTOValidator());
+        .WithValidation(new ProductDTOValidator<CreateProductDTO>());
 
         // PUT /products/{id} - Update an existing product
-        group.MapPut("/{id}", async (string id, ProductDTO productToUpdateDto, ProductExternalApiService productExternalApiService, TruestoryDbContext context) =>
+        group.MapPut("/{id}", async (string id, UpdateProductDTO productToUpdateDto, ProductExternalApiService productExternalApiService, TruestoryDbContext context) =>
         {
             try
             {
@@ -188,16 +235,16 @@ public static class ProductApiEndpoints
             }
         })
         .WithName("UpdateProduct")
-        .WithValidation(new ProductDTOValidator());
+        .WithValidation(new ProductDTOValidator<UpdateProductDTO>());
 
         // PATCH /products/{id} - Partially update a product
-        group.MapPatch("/{id}", async (string id, ProductDTO productToUpdateDto, ProductExternalApiService productExternalApiService, TruestoryDbContext context) =>
+        group.MapPatch("/{id}", async (string id, PatchProductDTO productToUpdateDto, ProductExternalApiService productExternalApiService, TruestoryDbContext context) =>
         {
             try
             {
                 var productDtoUpdated = await productExternalApiService.PartialUpdateProductAsync(id, productToUpdateDto);
-                var existingProduct = await context.Products.FindAsync(id);
-                if (existingProduct is null)
+                var product = await context.Products.FindAsync(id);
+                if (product is null)
                 {
                     return Results.NotFound(
                         new ErrorResponse(
@@ -206,10 +253,9 @@ public static class ProductApiEndpoints
                         )
                     );
                 }
-                var updatedProduct = ProductAdapter.UpdateEntity(existingProduct, productDtoUpdated);
-                context.Entry(existingProduct).CurrentValues.SetValues(updatedProduct);
+                ProductAdapter.ApplyToEntity(product, productDtoUpdated);
                 await context.SaveChangesAsync();
-                return Results.Ok(ProductAdapter.ToDto(updatedProduct));
+                return Results.Ok(ProductAdapter.ToDto(product));
             }
             catch (TruestoryApiException ex)
             {
@@ -229,7 +275,9 @@ public static class ProductApiEndpoints
                     )
                 );
             }
-        });
+        })
+        .WithName("PartialUpdateProduct")
+        .WithValidation(new ProductDTOValidator<PatchProductDTO>());
 
         // DELETE /products/{id} - Delete a product
         group.MapDelete("/{id}", async (string id, ProductExternalApiService productExternalApiService, TruestoryDbContext context) =>

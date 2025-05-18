@@ -3,14 +3,20 @@
 ### GET /products - Get all products
 GET {{baseUrl}}/products
 
+### GET /products?filter=term - Get all products with filter
+GET {{baseUrl}}/products?filter=Google
+
 ### GET /products/page/{page}/{pageSize=10} - Get products by page (default page size is 10)
 GET {{baseUrl}}/products/page/1
 
 ### GET /products/page/{page}/{pageSize} - Get products by page with custom page size
 GET {{baseUrl}}/products/page/3/5
 
+### GET /products/page/{page}/{pageSize}?filter=term - Get products by page with filter and custom page size
+GET {{baseUrl}}/products/page/1/5?filter=Apple
+
 ### GET /products/{id} - Get a product by ID
-GET {{baseUrl}}/products/ff808181932badb60196e087615833df
+GET {{baseUrl}}/products/ff808181932badb60196e19c641a3593
 
 ### POST /products - Create a new product
 POST {{baseUrl}}/products
@@ -27,7 +33,7 @@ Content-Type: application/json
 }
 
 ### PUT /products/{id} - Update a product by ID
-PUT {{baseUrl}}/products/ff808181932badb60196e087615833df
+PUT {{baseUrl}}/products/ff808181932badb60196e19c641a3593
 Content-Type: application/json
 
 {
@@ -42,15 +48,15 @@ Content-Type: application/json
 }
 
 ### PATCH /products/{id} - Partially update a product by ID
-PATCH {{baseUrl}}/products/ff808181932badb60196e087615833df
+PATCH {{baseUrl}}/products/ff808181932badb60196e1c893a635ab
 Content-Type: application/json
 
 {
-    "name": "Motorola Edge 40 Pro",
+    "name": "Motorola Edge 50 Pro",
     "data": {
-        "Cover Color": "Pink"
+        "Camera": "60MP"
     }
 }
 
 ### DELETE /products/{id} - Delete a product by ID
-DELETE {{baseUrl}}/products/ff808181932badb60196e087615833df
+DELETE {{baseUrl}}/products/ff808181932badb60196e19c641a3593
