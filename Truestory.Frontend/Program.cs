@@ -5,7 +5,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorComponents();
-builder.Services.AddScoped<ProductApiService>();
+builder.Services.AddSingleton<ProductApiService>();
 builder.Services.AddHttpClient("TruestoryApiClient", client =>
 {
     client.BaseAddress = new Uri(builder.Configuration.GetValue<string>("TruestoryApi:BaseUrl") ?? "https://localhost:5001");

@@ -1,0 +1,57 @@
+﻿@inject NavigationManager NavigationManager
+
+<nav class="inline-flex justify-center items-stretch gap-0 border border-gray-100 bg-white overflow-hidden rounded-[10px]">
+    @if (prevRef > 1) {
+        <span class="border-r border-r-gray-100 p-3 text-center">...</span>
+    }
+
+    @for (var i = 1; i <= TotalPages; i++)
+    {
+        @if (CurrentPage == i) 
+        {
+            <a href="@BuildUrlWithPage(i)" class="border-r border-r-gray-100 py-3 px-5 text-center font-bold text-white bg-purple-800">
+                @i
+            </a>
+        }
+        else if (i >= prevRef && i <= nextRef)
+        {
+            <a href="@BuildUrlWithPage(i)" class="border-r border-r-gray-100 py-3 px-5 text-center font-bold">
+                @i
+            </a>
+        }
+    }
+    
+    @if (nextRef < TotalPages) {
+        <span class="border-r border-r-gray-100 p-3 text-center">...</span>
+    }
+</nav>
+
+@code {
+    [Parameter] public int TotalPages { get; set; }
+    [Parameter] public int CurrentPage { get; set; }
+
+    private int prevRef = 0;
+    private int nextRef = 0;
+    private const int PAGES_BEFORE_AFTER = 2;
+    private string queryString = string.Empty;
+
+    protected override void OnInitialized()
+    {
+        prevRef = CurrentPage - PAGES_BEFORE_AFTER;
+        nextRef = CurrentPage + PAGES_BEFORE_AFTER;
+
+        var uri = NavigationManager.ToAbsoluteUri(NavigationManager.Uri);
+        var queryParams = uri.Query.Split("&").Where(q => !q.Contains("page")).ToList();
+        queryString = string.Join("&", queryParams);
+    }
+
+    private string BuildUrlWithPage(int page)
+    {
+        if (queryString == string.Empty)
+        {
+            return NavigationManager.BaseUri + "?page=" + page;
+        }
+
+        return NavigationManager.BaseUri + queryString + "&page=" + page;
+    }
+}

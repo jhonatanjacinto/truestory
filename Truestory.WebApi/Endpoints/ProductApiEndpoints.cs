@@ -26,7 +26,7 @@ public static class ProductApiEndpoints
                 if (!string.IsNullOrEmpty(term))
                 {
                     var productsFiltered = await context.Products
-                        .Where(p => p.Name.Contains(term))
+                        .Where(p => p.Name.Contains(term, StringComparison.OrdinalIgnoreCase))
                         .Select(p => ProductAdapter.ToDto(p))
                         .AsNoTracking()
                         .ToListAsync();
@@ -71,7 +71,7 @@ public static class ProductApiEndpoints
                 if (!string.IsNullOrEmpty(term))
                 {
                     var totalFilteredProducts = await context.Products
-                        .Where(p => p.Name.Contains(term))
+                        .Where(p => p.Name.Contains(term, StringComparison.OrdinalIgnoreCase))
                         .CountAsync();
                     var totalFilteredPages = (int)Math.Ceiling((double)totalFilteredProducts / pageSize);
                     if (page > totalFilteredPages)
@@ -85,7 +85,7 @@ public static class ProductApiEndpoints
                     }
 
                     var productsFiltered = await context.Products
-                        .Where(p => p.Name.Contains(term))
+                        .Where(p => p.Name.Contains(term, StringComparison.OrdinalIgnoreCase))
                         .Skip((page - 1) * pageSize)
                         .Take(pageSize)
                         .Select(p => ProductAdapter.ToDto(p))
