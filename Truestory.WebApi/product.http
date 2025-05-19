@@ -16,7 +16,7 @@ GET {{baseUrl}}/products/page/3/5
 GET {{baseUrl}}/products/page/1/5?filter=Apple
 
 ### GET /products/{id} - Get a product by ID
-GET {{baseUrl}}/products/ff808181932badb60196e19c641a3593
+GET {{baseUrl}}/products/1
 
 ### POST /products - Create a new product
 POST {{baseUrl}}/products

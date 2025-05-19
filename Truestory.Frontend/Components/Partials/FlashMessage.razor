@@ -1,0 +1,20 @@
+﻿@inject FlashMessageService FlashMessageService
+
+@if (FlashMessageService.HasMessage())
+{
+    <div class="flash-message @GetCssClass()">
+        @FlashMessageService.GetMessage()
+    </div>
+}
+
+@code {
+    private string GetCssClass()
+    {
+        return FlashMessageService.GetMessageType() switch
+        {
+            FlashMessageType.Success => "msg-success",
+            FlashMessageType.Error => "msg-error",
+            _ => "msg-warning"
+        };
+    }
+}

@@ -6,9 +6,9 @@ public record class PatchProductDTO : IProductDTO
 {
     [JsonPropertyName("name")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-    public string? Name { get; init; }
+    public string? Name { get; set; }
 
     [JsonPropertyName("data")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-    public Dictionary<string, dynamic>? Data { get; init; }
+    public Dictionary<string, dynamic>? Data { get; set; }
 }

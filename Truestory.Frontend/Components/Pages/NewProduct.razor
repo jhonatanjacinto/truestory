@@ -1,7 +1,49 @@
 ﻿@page "/new-product"
+@inject ProductApiService ProductApiService
+@inject NavigationManager Navigation
+@inject FlashMessageService FlashMessageService
+@inject ILogger<NewProduct> Logger
 
 <PageTitle>New Product | Truestory&reg;</PageTitle>
 
-@code {
+<div class="container">
+    <FlashMessage />
+    <EditForm Enhance Model="@Product" OnValidSubmit="@HandleValidSubmit" FormName="newProductForm" class="rounded-[10px] bg-white shadow-lg p-5">
+        <div>
+            <label class="font-bold" for="name">Product Name:</label>
+            <InputText id="name" class="form-control" @bind-Value="Product.Name" />
+        </div>
+        <div class="border-t border-gray-300 mt-4 pt-4">
+            <button type="submit" class="btn-default cursor-pointer">Create Product</button>
+        </div>
+    </EditForm>
+</div>
 
+@code {
+    [SupplyParameterFromForm] private CreateProductDTO Product { get; set; } = new();
+
+    private async Task HandleValidSubmit()
+    {
+        try
+        {
+            var validator = new ProductDTOValidator<CreateProductDTO>();
+            validator.ValidateWithTruestoryApiException(Product);
+            await ProductApiService.CreateProductAsync(Product);
+            FlashMessageService.SetMessage("Product created successfully.", FlashMessageType.Success);
+        }
+        catch (TruestoryApiException ex)
+        {
+            Logger.LogError(ex, "Error while creating product.");
+            FlashMessageService.SetMessage(ex.Message, FlashMessageType.Error);
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Unexpected error while creating product.");
+            FlashMessageService.SetMessage("An unexpected error occurred while creating the product.", FlashMessageType.Error);
+        }
+        finally
+        {
+            Navigation.Refresh();
+        }
+    }
 }

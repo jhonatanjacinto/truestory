@@ -2,12 +2,13 @@
 
 @inject NavigationManager Navigation
 @inject ProductApiService ProductApiService
+@inject FlashMessageService FlashMessageService
 @inject ILogger<Home> Logger
 
 <PageTitle>Truestory&reg; | Products List</PageTitle>
 
 <div class="container">
-    <form class="flex justify-between items-stretch bg-white p-1.5 rounded-[10px] shadow-md mb-[40px]" action="/" method="get">
+    <form data-enhance class="flex justify-between items-stretch bg-white p-1.5 rounded-[10px] shadow-md mb-[40px]" action="/" method="get">
         <input type="text" placeholder="Search product by name..." @bind="SearchTerm" name="term" class="p-5 grow" />
         <button class="btn-default group cursor-pointer">
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -16,14 +17,9 @@
         </button>
     </form>
 
-    @if (!string.IsNullOrEmpty(errorMessage))
-    {
-        <div class="msg-error">
-            @errorMessage
-        </div>
-    }
+    <FlashMessage />
 
-    @if (string.IsNullOrEmpty(errorMessage) && (products is null || !products.Items.Any()))
+    @if (products is null || !products.Items.Any())
     {
         <div class="msg-warning">
             No products were found to be displayed.
@@ -48,22 +44,22 @@
                         <td class="p-4 border-r border-r-gray-200">@(product.CreatedAt?.ToString() ?? "Not defined")</td>
                         <td class="p-4 border-r border-r-gray-200">@(product.UpdatedAt?.ToString() ?? "Not defined")</td>
                         <td class="p-4 text-center flex justify-start items-stretch gap-[5px]" colspan="2">
-                            <a href="/products/@product.Id" class="btn-view group" title="View Details">
+                            <a href="/product/@product.Id" class="btn-view group" title="View Details">
                                 <svg width="22" height="16" viewBox="0 0 22 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <path class="group-hover:stroke-white" d="M1.42012 8.71318C1.28394 8.49754 1.21584 8.38972 1.17772 8.22342C1.14909 8.0985 1.14909 7.9015 1.17772 7.77658C1.21584 7.61028 1.28394 7.50246 1.42012 7.28682C2.54553 5.50484 5.8954 1 11.0004 1C16.1054 1 19.4553 5.50484 20.5807 7.28682C20.7169 7.50246 20.785 7.61028 20.8231 7.77658C20.8517 7.9015 20.8517 8.0985 20.8231 8.22342C20.785 8.38972 20.7169 8.49754 20.5807 8.71318C19.4553 10.4952 16.1054 15 11.0004 15C5.8954 15 2.54553 10.4952 1.42012 8.71318Z" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                                     <path class="group-hover:stroke-white" d="M11.0004 11C12.6573 11 14.0004 9.65685 14.0004 8C14.0004 6.34315 12.6573 5 11.0004 5C9.34355 5 8.0004 6.34315 8.0004 8C8.0004 9.65685 9.34355 11 11.0004 11Z" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                                 </svg>
                             </a>
-                            <a href="/products/@product.Id/edit" class="btn-edit group" title="Edit Product">
+                            <a href="/product/@product.Id/edit" class="btn-edit group" title="Edit Product">
                                 <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <path class="group-hover:stroke-green-800" d="M10 19H19M1.00003 19H2.67457C3.16376 19 3.40835 19 3.63852 18.9447C3.84259 18.8957 4.03768 18.8149 4.21663 18.7053C4.41846 18.5816 4.59141 18.4086 4.93732 18.0627L17.5001 5.49998C18.3285 4.67156 18.3285 3.32841 17.5001 2.49998C16.6716 1.67156 15.3285 1.67156 14.5001 2.49998L1.93729 15.0627C1.59139 15.4086 1.41843 15.5816 1.29475 15.7834C1.18509 15.9624 1.10428 16.1574 1.05529 16.3615C1.00003 16.5917 1.00003 16.8363 1.00003 17.3255V19Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                                 </svg>
                             </a>
-                            <button class="btn-delete group" title="Delete Product">
+                            <a class="btn-delete group" href="/product/@product.Id/delete" title="Delete Product" onclick="return confirm('Are you sure you want to delete this product?');">
                                 <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <path class="group-hover:stroke-red-800" d="M7 1H13M1 4H19M17 4L16.2987 14.5193C16.1935 16.0975 16.1409 16.8867 15.8 17.485C15.4999 18.0118 15.0472 18.4353 14.5017 18.6997C13.882 19 13.0911 19 11.5093 19H8.49065C6.90891 19 6.11803 19 5.49834 18.6997C4.95276 18.4353 4.50009 18.0118 4.19998 17.485C3.85911 16.8867 3.8065 16.0975 3.70129 14.5193L3 4" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                                 </svg>
-                            </button>
+                            </a>
                         </td>
                     </tr>
                 }
@@ -83,24 +79,23 @@
     [SupplyParameterFromQuery(Name = "term")] private string? SearchTerm { get; set; } = null;
     [SupplyParameterFromQuery(Name = "page")] private int Page { get; set; } = 1;
     private PaginatedResponse<ProductDTO>? products = null;
-    private string errorMessage = string.Empty;
 
     protected override async Task OnInitializedAsync()
     {
         try
         {
-            errorMessage = string.Empty;
             Page = Page <= 0 ? 1 : Page;
             products = await ProductApiService.GetPaginatedProductsAsync(Page, 6, SearchTerm);
         }
         catch (TruestoryApiException ex)
         {
-            errorMessage = ex.Message;
+            Logger.LogError(ex, "Error while loading products to be displayed.");
+            FlashMessageService.SetMessage(ex.Message, FlashMessageType.Error);
         }
         catch (Exception ex)
         {
             Logger.LogError(ex, "Unexpected error while loading products to be displayed.");
-            errorMessage = "An unexpected error occurred while loading products to display.";
+            FlashMessageService.SetMessage("An unexpected error occurred while loading products to display.", FlashMessageType.Error);
         }
     }
 
@@ -108,7 +103,7 @@
     {
         if (SearchTerm == string.Empty)
         {
-            Navigation.NavigateTo("/", forceLoad: false);
+            Navigation.NavigateTo("/");
         }
     }
 }

@@ -22,7 +22,7 @@ public static class ProductAdapter
         return new Product
         {
             Id = productDto.Id,
-            Name = productDto.Name,
+            Name = productDto.Name ?? string.Empty,
             Data = productDto.Data,
             CreatedAt = productDto.CreatedAt,
             UpdatedAt = productDto.UpdatedAt

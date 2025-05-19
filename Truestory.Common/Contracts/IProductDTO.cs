@@ -4,5 +4,5 @@ namespace Truestory.Common.Contracts;
 
 public interface IProductDTO
 {
-    string? Name { get; init; }
+    string? Name { get; set; }
 }

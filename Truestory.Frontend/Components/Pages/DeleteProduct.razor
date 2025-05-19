@@ -1,0 +1,34 @@
+﻿@page "/product/{DeleteProductId}/delete"
+@inject ProductApiService ProductApiService
+@inject NavigationManager Navigation
+@inject FlashMessageService FlashMessageService
+@inject ILogger<DeleteProduct> Logger
+
+@code {
+    [Parameter] public string? DeleteProductId { get; set; } = null;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            if (DeleteProductId != null)
+            {
+                await ProductApiService.DeleteProductAsync(DeleteProductId);
+                FlashMessageService.SetMessage("Product deleted successfully.", FlashMessageType.Success);
+            }
+        }
+        catch (TruestoryApiException ex)
+        {
+            FlashMessageService.SetMessage(ex.Message, FlashMessageType.Error);
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Unexpected error while deleting product.");
+            FlashMessageService.SetMessage("An unexpected error occurred while deleting the product.", FlashMessageType.Error);
+        }
+        finally
+        {
+            Navigation.NavigateTo("/");
+        }
+    }
+}

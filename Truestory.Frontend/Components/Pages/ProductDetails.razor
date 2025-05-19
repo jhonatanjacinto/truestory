@@ -1,0 +1,60 @@
+﻿@page "/product/{ProductId}"
+@inject ProductApiService ProductApiService
+@inject NavigationManager Navigation
+@inject FlashMessageService FlashMessageService
+@inject ILogger<ProductDetails> Logger
+
+<PageTitle>@product.Name | Truestory&reg;</PageTitle>
+
+<div class="container">
+    <div class="bg-white shadow-lg rounded-[10px] p-5">
+        <h1 class="text-2xl font-bold">@product.Name</h1>
+        <p class="mt-2">
+            <strong>Created At:</strong> @(product.CreatedAt?.ToString("g") ?? "Not defined")<br />
+            <strong>Updated At:</strong> @(product.UpdatedAt?.ToString("g") ?? "Not defined")
+        </p>
+        @if (product.Data is not null && product.Data.Count > 0)
+        {
+            <div class="mt-4 pt-4 border-t border-gray-300">
+                <h2 class="text-xl font-semibold">Product Data</h2>
+                <ul class="mt-2.5 p-0 list-none border border-gray-300 rounded-[10px]">
+                    @foreach (var data in product.Data)
+                    {
+                        <li class="m-0 p-3 border-b border-gray-300 last:border-b-0">
+                            <strong>@data.Key:</strong> @data.Value
+                        </li>
+                    }
+                </ul>
+            </div>
+        }
+        else
+        {
+            <p class="mt-4">No product data available.</p>
+        }
+    </div>
+</div>
+
+@code {
+    [Parameter] public string? ProductId { get; set; }
+    private ProductDTO product { get; set; } = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            product = await ProductApiService.GetProductByIdAsync(ProductId);
+        }
+        catch (TruestoryApiException ex)
+        {
+            Logger.LogError(ex, "Error while fetching product details.");
+            FlashMessageService.SetMessage(ex.Message, FlashMessageType.Error);
+            Navigation.NavigateTo("/");
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Unexpected error while fetching product details.");
+            FlashMessageService.SetMessage("An unexpected error occurred while fetching the product details.", FlashMessageType.Error);
+            Navigation.NavigateTo("/");
+        }
+    }
+}
