@@ -1,0 +1,21 @@
+version: '3.8'
+services:
+  frontend:
+    container_name: truestory-frontend
+    build:
+      context: .
+      dockerfile: ./Truestory.Frontend/Dockerfile
+    ports:
+      - "5000:80"
+    environment:
+      - TruestoryApi__BaseUrl=http://webapi:80  # <-- this is key
+    depends_on:
+      - webapi
+
+  webapi:
+    container_name: truestory-webapi
+    build:
+      context: .
+      dockerfile: ./Truestory.WebApi/Dockerfile
+    ports:
+      - "5001:80"

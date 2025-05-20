@@ -1,0 +1,15 @@
+bin/
+obj/
+*.user
+*.suo
+*.git
+*.vs
+*.db
+*.md
+Dockerfile*
+docker-compose.*
+.vscode/
+.env
+node_modules/
+package-lock.json
+package.json

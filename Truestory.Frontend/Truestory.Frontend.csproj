@@ -10,9 +10,4 @@
     <ProjectReference Include="../Truestory.Common/Truestory.Common.csproj" />
   </ItemGroup>
 
-  <Target Name="RunNpmBuild" BeforeTargets="Build;Publish">
-    <Exec Command="npm install" />
-    <Exec Command="npm run build" />
-  </Target>
-
 </Project>

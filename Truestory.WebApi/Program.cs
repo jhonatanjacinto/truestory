@@ -18,15 +18,11 @@ builder.Services.AddHostedService<ProductDbSeederService>();
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
+app.MapOpenApi();
+app.UseSwaggerUI(options =>
 {
-    app.MapOpenApi();
-    app.UseSwaggerUI(options =>
-    {
-        options.SwaggerEndpoint("/openapi/v1.json", "Truestory API v1");
-    });
-}
-
+    options.SwaggerEndpoint("/openapi/v1.json", "Truestory API v1");
+});
 app.UseHttpsRedirection();
 app.UseMiddleware<InvalidJsonHandler>();
 app.MapGet("/", () => "Welcome to the Truestory API!");
