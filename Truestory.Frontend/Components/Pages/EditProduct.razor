@@ -65,21 +65,18 @@
                 Product.Name = product.Name;
                 Product.Data = product.Data;
             }
-            else
-            {
-                FlashMessageService.SetMessage("Product not found.", FlashMessageType.Error);
-                Navigation.NavigateTo("/");
-            }
         }
         catch (TruestoryApiException ex)
         {
             Logger.LogError(ex, "Error while fetching product.");
             FlashMessageService.SetMessage(ex.Message, FlashMessageType.Error);
+            Navigation.NavigateTo("/");
         }
         catch (Exception ex)
         {
             Logger.LogError(ex, "Unexpected error while fetching product.");
             FlashMessageService.SetMessage("An unexpected error occurred while fetching the product.", FlashMessageType.Error);
+            Navigation.NavigateTo("/");
         }
     }
     private async Task HandleValidSubmit()
