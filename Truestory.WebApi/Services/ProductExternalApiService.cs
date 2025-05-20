@@ -1,4 +1,6 @@
+using System.Text.Json;
 using Truestory.Common.Contracts;
+using Truestory.WebApi.ApiResponses;
 using Truestory.WebApi.Exceptions;
 
 namespace Truestory.WebApi.Services;
@@ -77,10 +79,10 @@ public class ProductExternalApiService(
                 return createdProduct ?? throw new ExternalApiServiceException($"Failed to create product in external API.");
             }
 
-            var responseInfo = await response.Content.ReadFromJsonAsync<dynamic>();
+            var responseInfo = await response.Content.ReadFromJsonAsync<ExternalApiError>();
             if (responseInfo is not null)
             {
-                var errorMessage = responseInfo.error ?? "Unknown error";
+                var errorMessage = responseInfo.Error ?? "Unknown error";
                 throw new ExternalApiServiceException($"Failed to create product in external API: {errorMessage}");
             }
 
@@ -111,10 +113,10 @@ public class ProductExternalApiService(
                 return updatedProduct ?? throw new ExternalApiServiceException($"Failed to update product with ID '{id}' in external API.");
             }
 
-            var responseInfo = await response.Content.ReadFromJsonAsync<dynamic>();
+            var responseInfo = await response.Content.ReadFromJsonAsync<ExternalApiError>();
             if (responseInfo is not null)
             {
-                var errorMessage = responseInfo.error ?? "Unknown error";
+                var errorMessage = responseInfo.Error ?? "Unknown error";
                 throw new ExternalApiServiceException($"Failed to update product in external API: {errorMessage}");
             }
 
@@ -144,10 +146,10 @@ public class ProductExternalApiService(
                 return updatedProduct ?? throw new ExternalApiServiceException($"Failed to update product with ID '{id}' in external API.");
             }
 
-            var responseInfo = await response.Content.ReadFromJsonAsync<dynamic>();
+            var responseInfo = await response.Content.ReadFromJsonAsync<ExternalApiError>();
             if (responseInfo is not null)
             {
-                var errorMessage = responseInfo.error ?? "Unknown error";
+                var errorMessage = responseInfo.Error ?? "Unknown error";
                 throw new ExternalApiServiceException($"Failed to update product in external API: {errorMessage}");
             }
 

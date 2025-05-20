@@ -3,15 +3,28 @@
 @inject NavigationManager Navigation
 @inject FlashMessageService FlashMessageService
 @inject ILogger<NewProduct> Logger
+@inject IHttpContextAccessor HttpContextAccessor
 
 <PageTitle>New Product | Truestory&reg;</PageTitle>
 
 <div class="container">
     <FlashMessage />
-    <EditForm Enhance Model="@Product" OnValidSubmit="@HandleValidSubmit" FormName="newProductForm" class="rounded-[10px] bg-white shadow-lg p-5">
+    <h1 class="text-2xl font-bold mb-4">Create New Product</h1>
+    <EditForm Enhance Model="@Product" OnValidSubmit="@HandleValidSubmit" FormName="newProductForm"
+        class="rounded-[10px] bg-white shadow-lg p-5">
         <div>
             <label class="font-bold" for="name">Product Name:</label>
             <InputText id="name" class="form-control" @bind-Value="Product.Name" />
+        </div>
+        <div class="mt-4">
+            <label class="font-bold">Data:</label>
+            <div class="data-items">
+                <div class="data-item flex items-center mb-2 gap-[10px]">
+                    <input type="text" class="form-control mr-2" name="keys[]" placeholder="Key" />
+                    <input type="text" class="form-control" name="values[]" placeholder="Value" />
+                </div>
+            </div>
+            <button type="button" class="btn-add-item btn-default cursor-pointer">Add Data Item</button>
         </div>
         <div class="border-t border-gray-300 mt-4 pt-4">
             <button type="submit" class="btn-default cursor-pointer">Create Product</button>
@@ -28,6 +41,32 @@
         {
             var validator = new ProductDTOValidator<CreateProductDTO>();
             validator.ValidateWithTruestoryApiException(Product);
+
+            // Get Data from the form directly from HttpContext Request
+            var formData = HttpContextAccessor.HttpContext.Request.Form;
+            var keys = formData["keys[]"];
+            var values = formData["values[]"];
+
+            if (keys.Count != values.Count)
+            {
+                throw new TruestoryApiException("The number of keys and values must match.");
+            }
+
+            if (keys.Count > 0)
+            {
+                Product.Data = new();
+                for (int i = 0; i < keys.Count; i++)
+                {
+                    var key = keys[i];
+                    var value = values[i];
+
+                    if (!string.IsNullOrEmpty(key) && !string.IsNullOrEmpty(value))
+                    {
+                        Product.Data.Add(key, value);
+                    }
+                }
+            }
+
             await ProductApiService.CreateProductAsync(Product);
             FlashMessageService.SetMessage("Product created successfully.", FlashMessageType.Success);
         }

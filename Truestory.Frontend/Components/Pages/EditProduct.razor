@@ -1,0 +1,140 @@
+﻿@page "/product/{ProductId}/edit"
+@inject ProductApiService ProductApiService
+@inject NavigationManager Navigation
+@inject FlashMessageService FlashMessageService
+@inject ILogger<NewProduct> Logger
+@inject IHttpContextAccessor HttpContextAccessor
+
+<PageTitle>Edit Product | Truestory&reg;</PageTitle>
+
+<div class="container">
+    <FlashMessage />
+    <h1 class="text-2xl font-bold mb-4">Edit Product</h1>
+    <EditForm Enhance Model="@Product" OnValidSubmit="@HandleValidSubmit" FormName="editProductForm"
+        class="rounded-[10px] bg-white shadow-lg p-5">
+        <div>
+            <label class="font-bold" for="name">Product Name:</label>
+            <InputText id="name" class="form-control" @bind-Value="Product.Name" />
+        </div>
+        <div class="mt-4">
+            <label class="font-bold">Data:</label>
+            <div class="data-items">
+                @if (Product.Data != null && Product.Data.Count > 0)
+                {
+                    foreach (var item in Product.Data)
+                    {
+                        <div class="data-item flex items-center mb-2 gap-[10px]">
+                            <input type="text" class="form-control mr-2" name="keys[]" value="@item.Key" placeholder="Key" />
+                            <input type="text" class="form-control" name="values[]" value="@item.Value" placeholder="Value" />
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="data-item flex items-center mb-2 gap-[10px]">
+                        <input type="text" class="form-control mr-2" name="keys[]" placeholder="Key" />
+                        <input type="text" class="form-control" name="values[]" placeholder="Value" />
+                    </div>
+                }
+            </div>
+            <button type="button" class="btn-add-item btn-default cursor-pointer">Add Data Item</button>
+        </div>
+        <div class="border-t border-gray-300 mt-4 pt-4">
+            <button type="submit" class="btn-default cursor-pointer">Update Product</button>
+        </div>
+    </EditForm>
+</div>
+
+@code {
+    [SupplyParameterFromForm] private UpdateProductDTO Product { get; set; } = new();
+    [Parameter] public string ProductId { get; set; } = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            // if is a postback, do not fetch the product
+            if (HttpContextAccessor.HttpContext?.Request.Method == HttpMethods.Post)
+            {
+                return;
+            }
+            
+            var product = await ProductApiService.GetProductByIdAsync(ProductId);
+            if (product != null)
+            {
+                Product.Name = product.Name;
+                Product.Data = product.Data;
+            }
+            else
+            {
+                FlashMessageService.SetMessage("Product not found.", FlashMessageType.Error);
+                Navigation.NavigateTo("/");
+            }
+        }
+        catch (TruestoryApiException ex)
+        {
+            Logger.LogError(ex, "Error while fetching product.");
+            FlashMessageService.SetMessage(ex.Message, FlashMessageType.Error);
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Unexpected error while fetching product.");
+            FlashMessageService.SetMessage("An unexpected error occurred while fetching the product.", FlashMessageType.Error);
+        }
+    }
+    private async Task HandleValidSubmit()
+    {
+        try
+        {
+            var validator = new ProductDTOValidator<UpdateProductDTO>();
+            validator.ValidateWithTruestoryApiException(Product);
+
+            // Get Data from the form directly from HttpContext Request
+            var formData = HttpContextAccessor.HttpContext?.Request.Form;
+            if (formData == null)
+            {
+                throw new TruestoryApiException("Form data is not available.");
+            }
+
+            var keys = formData["keys[]"];
+            var values = formData["values[]"];
+
+            if (keys.Count != values.Count)
+            {
+                throw new TruestoryApiException("The number of keys and values must match.");
+            }
+
+            if (keys.Count > 0)
+            {
+                Product.Data = new();
+                for (int i = 0; i < keys.Count; i++)
+                {
+                    var key = keys[i];
+                    var value = values[i];
+
+                    if (!string.IsNullOrEmpty(key) && !string.IsNullOrEmpty(value))
+                    {
+                        Product.Data.Add(key, value);
+                    }
+                }
+            }
+
+            await ProductApiService.UpdateProductAsync(ProductId, Product);
+            FlashMessageService.SetMessage("Product updated successfully.", FlashMessageType.Success);
+        }
+        catch (TruestoryApiException ex)
+        {
+            Logger.LogError(ex, "Error while updating product.");
+            FlashMessageService.SetMessage(ex.Message, FlashMessageType.Error);
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Unexpected error while updating product.");
+            FlashMessageService.SetMessage("An unexpected error occurred while updating the product.", FlashMessageType.Error);
+        }
+        finally
+        {
+            Navigation.Refresh();
+        }
+    }
+}

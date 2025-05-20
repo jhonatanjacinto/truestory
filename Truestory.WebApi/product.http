@@ -33,7 +33,7 @@ Content-Type: application/json
 }
 
 ### PUT /products/{id} - Update a product by ID
-PUT {{baseUrl}}/products/ff808181932badb60196e19c641a3593
+PUT {{baseUrl}}/products/1
 Content-Type: application/json
 
 {

@@ -151,7 +151,7 @@ public class ProductApiService(IHttpClientFactory httpClientFactory, ILogger<Pro
         {
             var client = httpClientFactory.CreateClient("TruestoryApiClient");
             var content = new StringContent(JsonSerializer.Serialize(productUpdated), Encoding.UTF8, "application/json");
-            var response = await client.PutAsync($"/product/{id}", content);
+            var response = await client.PutAsync($"/products/{id}", content);
 
             if (response.IsSuccessStatusCode)
             {
