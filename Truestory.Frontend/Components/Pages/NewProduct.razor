@@ -43,7 +43,12 @@
             validator.ValidateWithTruestoryApiException(Product);
 
             // Get Data from the form directly from HttpContext Request
-            var formData = HttpContextAccessor.HttpContext.Request.Form;
+            var formData = HttpContextAccessor.HttpContext?.Request.Form;
+            if (formData == null)
+            {
+                throw new TruestoryApiException("Form data is not available.");
+            }
+
             var keys = formData["keys[]"];
             var values = formData["values[]"];
 
