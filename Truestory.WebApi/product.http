@@ -4,19 +4,19 @@
 GET {{baseUrl}}/products
 
 ### GET /products?filter=term - Get all products with filter
-GET {{baseUrl}}/products?filter=Google
+GET {{baseUrl}}/products?filter=motorola
 
 ### GET /products/page/{page}/{pageSize=10} - Get products by page (default page size is 10)
 GET {{baseUrl}}/products/page/1
 
 ### GET /products/page/{page}/{pageSize} - Get products by page with custom page size
-GET {{baseUrl}}/products/page/3/5
+GET {{baseUrl}}/products/page/2/5
 
 ### GET /products/page/{page}/{pageSize}?filter=term - Get products by page with filter and custom page size
 GET {{baseUrl}}/products/page/1/5?filter=Apple
 
 ### GET /products/{id} - Get a product by ID
-GET {{baseUrl}}/products/1
+GET {{baseUrl}}/products/ff80818196f2a23f0196f6727ac70946
 
 ### POST /products - Create a new product
 POST {{baseUrl}}/products
@@ -33,7 +33,7 @@ Content-Type: application/json
 }
 
 ### PUT /products/{id} - Update a product by ID
-PUT {{baseUrl}}/products/1
+PUT {{baseUrl}}/products/ff80818196f2a23f0196f6727ac70946
 Content-Type: application/json
 
 {
@@ -48,7 +48,7 @@ Content-Type: application/json
 }
 
 ### PATCH /products/{id} - Partially update a product by ID
-PATCH {{baseUrl}}/products/ff808181932badb60196e1c893a635ab
+PATCH {{baseUrl}}/products/ff80818196f2a23f0196f6727ac70946
 Content-Type: application/json
 
 {
@@ -59,4 +59,4 @@ Content-Type: application/json
 }
 
 ### DELETE /products/{id} - Delete a product by ID
-DELETE {{baseUrl}}/products/ff808181932badb60196e19c641a3593
+DELETE {{baseUrl}}/products/ff80818196f2a23f0196f6727ac70946
