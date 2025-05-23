@@ -16,7 +16,7 @@ GET {{baseUrl}}/products/page/2/5
 GET {{baseUrl}}/products/page/1/5?filter=Apple
 
 ### GET /products/{id} - Get a product by ID
-GET {{baseUrl}}/products/ff80818196f2a23f0196f6727ac70946
+GET {{baseUrl}}/products/ff80818196f2a23f0196faeedbdf155c
 
 ### POST /products - Create a new product
 POST {{baseUrl}}/products
@@ -33,7 +33,7 @@ Content-Type: application/json
 }
 
 ### PUT /products/{id} - Update a product by ID
-PUT {{baseUrl}}/products/ff80818196f2a23f0196f6727ac70946
+PUT {{baseUrl}}/products/ff80818196f2a23f0196faeedbdf155c
 Content-Type: application/json
 
 {
@@ -48,7 +48,7 @@ Content-Type: application/json
 }
 
 ### PATCH /products/{id} - Partially update a product by ID
-PATCH {{baseUrl}}/products/ff80818196f2a23f0196f6727ac70946
+PATCH {{baseUrl}}/products/ff80818196f2a23f0196faeedbdf155c
 Content-Type: application/json
 
 {
@@ -59,4 +59,4 @@ Content-Type: application/json
 }
 
 ### DELETE /products/{id} - Delete a product by ID
-DELETE {{baseUrl}}/products/ff80818196f2a23f0196f6727ac70946
+DELETE {{baseUrl}}/products/ff80818196f2a23f0196faeedbdf155c

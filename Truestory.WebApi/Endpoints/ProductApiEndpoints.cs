@@ -19,18 +19,10 @@ public static class ProductApiEndpoints
         var group = app.MapGroup("/products");
 
         // GET /products - Get all products
-        group.MapGet("/", async ([FromQuery(Name = "filter")] string? term, TruestoryDbContext context) =>
-        {
-            return await GetAllProductsAsync(term, context);
-        })
-        .WithName("GetAllProducts");
+        group.MapGet("/", GetAllProductsAsync).WithName("GetAllProducts");
 
         // GET /products/page/{page}/{pageSize} - Get products by page
-        group.MapGet("/page/{page:int}/{pageSize:int=10}", async (int page, int pageSize, [FromQuery(Name = "filter")] string? term, TruestoryDbContext context) =>
-        {
-            return await GetPaginatedProductsAsync(page, pageSize, term, context);
-        })
-        .WithName("GetProductsByPage");
+        group.MapGet("/page/{page:int}/{pageSize:int=10}", GetPaginatedProductsAsync).WithName("GetProductsByPage");
 
         // GET /products/{id} - Get a product by ID
         group.MapGet("/{id}", async (string id, TruestoryDbContext context) =>
@@ -48,40 +40,27 @@ public static class ProductApiEndpoints
         .WithName("GetProductById");
 
         // POST /products - Create a new product
-        group.MapPost("/", async (CreateProductDTO createProductDto, ProductExternalApiService productExternalApiService, TruestoryDbContext context) =>
-        {
-            return await PostProductAsync(createProductDto, productExternalApiService, context);
-        })
-        .WithName("CreateProduct")
-        .WithValidation(new ProductDTOValidator<CreateProductDTO>());
+        group.MapPost("/", PostProductAsync)
+            .WithName("CreateProduct")
+            .WithValidation(new ProductDTOValidator<CreateProductDTO>());
 
         // PUT /products/{id} - Update an existing product
-        group.MapPut("/{id}", async (string id, UpdateProductDTO productToUpdateDto, ProductExternalApiService productExternalApiService, TruestoryDbContext context) =>
-        {
-            return await PutProductAsync(id, productToUpdateDto, productExternalApiService, context);
-        })
-        .WithName("UpdateProduct")
-        .WithValidation(new ProductDTOValidator<UpdateProductDTO>());
+        group.MapPut("/{id}", PutProductAsync)
+            .WithName("UpdateProduct")
+            .WithValidation(new ProductDTOValidator<UpdateProductDTO>());
 
         // PATCH /products/{id} - Partially update a product
-        group.MapPatch("/{id}", async (string id, PatchProductDTO productToUpdateDto, ProductExternalApiService productExternalApiService, TruestoryDbContext context) =>
-        {
-            return await PatchProductAsync(id, productToUpdateDto, productExternalApiService, context);
-        })
-        .WithName("PartialUpdateProduct")
-        .WithValidation(new ProductDTOValidator<PatchProductDTO>());
+        group.MapPatch("/{id}", PatchProductAsync)
+            .WithName("PartialUpdateProduct")
+            .WithValidation(new ProductDTOValidator<PatchProductDTO>());
 
         // DELETE /products/{id} - Delete a product
-        group.MapDelete("/{id}", async (string id, ProductExternalApiService productExternalApiService, TruestoryDbContext context) =>
-        {
-            return await DeleteProductAsync(id, productExternalApiService, context);
-        })
-        .WithName("DeleteProduct");
+        group.MapDelete("/{id}", DeleteProductAsync).WithName("DeleteProduct");
 
         return app;
     }
 
-    private static async Task<IResult> GetAllProductsAsync(string? term, TruestoryDbContext context)
+    private static async Task<IResult> GetAllProductsAsync([FromQuery(Name = "filter")] string? term, TruestoryDbContext context)
     {
         try
         {
@@ -114,7 +93,7 @@ public static class ProductApiEndpoints
         }
     }
 
-    private static async Task<IResult> GetPaginatedProductsAsync(int page, int pageSize, string? term, TruestoryDbContext context)
+    private static async Task<IResult> GetPaginatedProductsAsync(int page, int pageSize, [FromQuery(Name = "filter")] string? term, TruestoryDbContext context)
     {
         if (page < 1 || pageSize < 1)
         {
