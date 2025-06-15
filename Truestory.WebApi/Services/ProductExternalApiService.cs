@@ -18,7 +18,7 @@ public class ProductExternalApiService(
     {
         try
         {
-            var client = httpClientFactory.CreateClient("ExternalApiClient");
+            using var client = httpClientFactory.CreateClient("ExternalApiClient");
             var response = await client.GetAsync("/objects");
 
             if (response.IsSuccessStatusCode)
@@ -46,7 +46,7 @@ public class ProductExternalApiService(
     {
         try
         {
-            var client = httpClientFactory.CreateClient("ExternalApiClient");
+            using var client = httpClientFactory.CreateClient("ExternalApiClient");
             var response = await client.DeleteAsync($"/objects/{id}");
 
             if (!response.IsSuccessStatusCode)
@@ -71,7 +71,7 @@ public class ProductExternalApiService(
     {
         try
         {
-            var client = httpClientFactory.CreateClient("ExternalApiClient");
+            using var client = httpClientFactory.CreateClient("ExternalApiClient");
             var response = await client.PostAsJsonAsync("/objects", productDto);
             if (response.IsSuccessStatusCode)
             {
@@ -105,7 +105,7 @@ public class ProductExternalApiService(
     {
         try
         {
-            var client = httpClientFactory.CreateClient("ExternalApiClient");
+            using var client = httpClientFactory.CreateClient("ExternalApiClient");
             var response = await client.PutAsJsonAsync($"/objects/{id}", productDto);
             if (response.IsSuccessStatusCode)
             {
@@ -138,7 +138,7 @@ public class ProductExternalApiService(
     {
         try
         {
-            var client = httpClientFactory.CreateClient("ExternalApiClient");
+            using var client = httpClientFactory.CreateClient("ExternalApiClient");
             var response = await client.PatchAsJsonAsync($"/objects/{id}", productDto);
             if (response.IsSuccessStatusCode)
             {

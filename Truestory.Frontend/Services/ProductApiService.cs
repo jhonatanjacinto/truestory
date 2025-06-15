@@ -14,7 +14,7 @@ public class ProductApiService(IHttpClientFactory httpClientFactory, ILogger<Pro
     {
         try
         {
-            var client = httpClientFactory.CreateClient("TruestoryApiClient");
+            using var client = httpClientFactory.CreateClient("TruestoryApiClient");
             var queryParams = new Dictionary<string, string?>();
 
             if (!string.IsNullOrEmpty(term))
@@ -55,7 +55,7 @@ public class ProductApiService(IHttpClientFactory httpClientFactory, ILogger<Pro
     {
         try
         {
-            var client = httpClientFactory.CreateClient("TruestoryApiClient");
+            using var client = httpClientFactory.CreateClient("TruestoryApiClient");
             var queryParams = new Dictionary<string, string?>();
 
             if (!string.IsNullOrEmpty(term))
@@ -96,7 +96,7 @@ public class ProductApiService(IHttpClientFactory httpClientFactory, ILogger<Pro
     {
         try
         {
-            var client = httpClientFactory.CreateClient("TruestoryApiClient");
+            using var client = httpClientFactory.CreateClient("TruestoryApiClient");
             var response = await client.GetAsync($"/products/{id}");
 
             if (response.IsSuccessStatusCode)
@@ -124,7 +124,7 @@ public class ProductApiService(IHttpClientFactory httpClientFactory, ILogger<Pro
     {
         try
         {
-            var client = httpClientFactory.CreateClient("TruestoryApiClient");
+            using var client = httpClientFactory.CreateClient("TruestoryApiClient");
             var response = await client.DeleteAsync($"/products/{id}");
 
             if (!response.IsSuccessStatusCode)
@@ -149,7 +149,7 @@ public class ProductApiService(IHttpClientFactory httpClientFactory, ILogger<Pro
     {
         try
         {
-            var client = httpClientFactory.CreateClient("TruestoryApiClient");
+            using var client = httpClientFactory.CreateClient("TruestoryApiClient");
             var content = new StringContent(JsonSerializer.Serialize(productUpdated), Encoding.UTF8, "application/json");
             var response = await client.PutAsync($"/products/{id}", content);
 
@@ -178,7 +178,7 @@ public class ProductApiService(IHttpClientFactory httpClientFactory, ILogger<Pro
     {
         try
         {
-            var client = httpClientFactory.CreateClient("TruestoryApiClient");
+            using var client = httpClientFactory.CreateClient("TruestoryApiClient");
             var content = new StringContent(JsonSerializer.Serialize(product), Encoding.UTF8, "application/json");
             var response = await client.PostAsync("/products", content);
 
